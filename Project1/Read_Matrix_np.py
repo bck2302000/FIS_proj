@@ -9,6 +9,7 @@ There is also a function for the matrix to multiply with a vector.
 @author: Ruei-Bo
 """
 
+import numpy as np
 
 class CSR:
     def __init__(self, mat_file):
@@ -49,7 +50,7 @@ class CSR:
         del temp
         
         
-        return val, col, row_idx, symmetric, diag
+        return val, col, row_idx, symmetric, np.array(diag)
 
     def To_CSC(self, FileName):
         val_CSC, row, col_idx = [], [], []
@@ -110,8 +111,7 @@ class CSR:
         
         def CS_multi(val, col, row_idx, vec):
             cursor = 0
-            n = len(vec)
-            result = [0] * n
+            result = np.zeros_like(vec)
             for i in range(len(row_idx)-1):
                 num_nonzero_ele = row_idx[i+1] - row_idx[i]
                 for j in range(num_nonzero_ele):
@@ -129,8 +129,8 @@ class CSR:
             return result
         
 
-x_nonsym = [1] * 1030
-x_sym = [1] * 5357
-x_test = [1] * 3
+x_nonsym = np.ones(1030)
+x_sym = np.ones(5357)
+x_test = np.ones(3)
 A = CSR('aaa.mtx')
 b = A.mat_multi(x_test)
