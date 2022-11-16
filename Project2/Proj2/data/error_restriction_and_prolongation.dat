@@ -1,0 +1,6 @@
+Error of restricion
+n = 4: 0.0746719
+n = 7: 0.00120418
+Error of prolongation
+n = 4: 0.707107
+n = 7: 0.501203

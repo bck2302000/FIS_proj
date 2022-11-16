@@ -15,7 +15,9 @@ class CSR:
         self.FileName = mat_file
         self.shape = []
         self.val_CSR, self.col, self.row_idx, self.symmetric, self.diag = self.To_CSR(self.FileName)
+        #breakpoint()
         if self.symmetric == True: 
+            #breakpoint()
             self.val_CSC, self.row, self.col_idx = self.To_CSC(self.FileName)
         
     def To_CSR(self, mat_file):
@@ -23,8 +25,9 @@ class CSR:
         f = open(mat_file, 'r')
         has_run = False
         diag = []
+        line = f.readline()
+        symmetric = True if 'symmetric' in line else False
         for line in f:
-            symmetric = [True if 'symmetric' in line else False]
             if not (line.startswith('%') or has_run):                              #filter those line begining with '%'
                 shape = list(map(int, (line.split())))                               #then catch the first line (info of matrix)
                 self.shape = shape
@@ -48,7 +51,7 @@ class CSR:
         row_idx.append(len(val)+1)
         del temp
         
-        
+        #breakpoint()
         return val, col, row_idx, symmetric, diag
 
     def To_CSC(self, FileName):
@@ -118,19 +121,28 @@ class CSR:
                     result[i] += val[cursor+j]*vec[col[cursor+j]-1]
                 cursor += num_nonzero_ele
             return result
-        if self.symmetric == True:                                                  # if it's symmetric, (Ax + (A^T)x) - diag = the result of the complete matrix
+        if self.symmetric == True:                                                  # if it's symmetric, (Ax + (A^T)x) - diag * x = the result of the complete matrix
             CSR_result = CS_multi(self.val_CSR, self.col, self.row_idx, vec)            # because the symmetric matrix just contains the elements of the lower triangle
             CSC_result = CS_multi(self.val_CSC, self.row, self.col_idx, vec)
-            result = CSR_result + CSC_result
-            result = result - self.diag
-            return result
+            result = [a + b for a, b in zip(CSR_result, CSC_result)]
+            #zero = [i for i,x in enumerate(vec) if x == 0]
+            #breakpoint()
+            idx = 0
+            result1 = []
+            for a,b in zip(result, self.diag):
+                result1.append(a - b * vec[idx])
+                idx += 1
+            #result = [a - b for idx, a, b in enumerate(zip(result, self.diag)) if idx not in zero]
+            return result1
         else:        
             result = CS_multi(self.val_CSR, self.col, self.row_idx, vec)
+            #breakpoint()
             return result
         
 
 x_nonsym = [1] * 1030
 x_sym = [1] * 5357
-x_test = [1] * 3
+#x_test = [0] * 3
+x_test = [3,4,5]
 A = CSR('aaa.mtx')
 b = A.mat_multi(x_test)

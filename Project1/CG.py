@@ -29,7 +29,7 @@ class CG:
             rm_dot = multiply(r[m],r[m], True)
             alpha.append(rm_dot / multiply(Ap, p[m], True))
             alpha_p = [alpha[m] * val for val in p[m]]
-            breakpoint()
+            #breakpoint()
             x.append([i + j for i, j in zip(x[m], alpha_p)])
             r.append([i - j for i, j in zip(r[m], [alpha[m] * val for val in Ap])])
             beta.append(multiply(r[m+1], r[m+1], True) / rm_dot)
@@ -71,6 +71,7 @@ def L2_norm(v):
     return a**0.5    
 
 A = CSR('s3rmt3m3.mtx')  
+#A = CSR('aaa.mtx')
 x_star = [1] * A.shape[0]   #np.ones(A.shape[0])   
 b = A.mat_multi(x_star)
 x0 = [0] * A.shape[0]
